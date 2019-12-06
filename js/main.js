@@ -10202,7 +10202,7 @@ $__System.register('b', ['9', 'a'], function (_export) {
 	// VARS
 	'use strict';
 
-	var $, lg, sessionID, testID;
+	var $, lg, sessionID, testID, runTracking;
 
 	// =======================================================================================
 	// TEST NOTES
@@ -10217,6 +10217,9 @@ $__System.register('b', ['9', 'a'], function (_export) {
 		var urlParams = new URLSearchParams(window.location.search);
 		sessionID = Number(urlParams.get('session'));
 		testID = Number(urlParams.get('test'));
+		if (sessionID && testID) {
+			runTracking = 1;
+		}
 		log_action('START SESSION');
 	}
 	// ----------------- TRACK CLICK ROW -----------------
@@ -10277,17 +10280,11 @@ $__System.register('b', ['9', 'a'], function (_export) {
 		}
 	}
 	// ----------------- TRACK GET SEARCH STRING -----------------
-	function log_action(action) {}
-	//lg(`------<br>sessionID: {blue{${sessionID}}}<br>testID: {blue{${testID}}}<br>timestamp: {blue{${Math.round(performance.now())}}}<br>{yellow{${action}}}`);
-	/*
- lg(`------<br>
- 	sessionID: {blue{${sessionID}}}<br>
- 	testID: {blue{${testID}}}<br>
- 	timestamp: {blue{${Math.round(performance.now())}}}<br>
- 	{yellow{${action}}}
- 	`);
- */
-
+	function log_action(action) {
+		if (runTracking) {
+			lg('------<br>\n\t\t\tsessionID: {blue{' + sessionID + '}}<br>\n\t\t\ttestID: {blue{' + testID + '}}<br>\n\t\t\ttimestamp: {blue{' + Math.round(performance.now()) + '}}<br>\n\t\t\t{yellow{' + action + '}}\n\t\t\t');
+		}
+	}
 	// =======================================================================================
 	// EXPORT
 	return {
@@ -10299,6 +10296,7 @@ $__System.register('b', ['9', 'a'], function (_export) {
 		execute: function () {
 			sessionID = undefined;
 			testID = undefined;
+			runTracking = 0;
 
 			_export('track_start_session', track_start_session);
 
